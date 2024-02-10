@@ -67,31 +67,20 @@ public class RestauranteController {
 	}
 
 	@PutMapping("/{restauranteId}")
-	public ResponseEntity<?> atualizar(@PathVariable Long restauranteId, @RequestBody Restaurante restaurante) {
-	    Optional<Restaurante> optionalRestaurante = restauranteRepository.findById(restauranteId);
-
-	    if (optionalRestaurante.isPresent()) {
-	        Restaurante restauranteAtual = optionalRestaurante.get();
-
-	        try {
-	            
-	            BeanUtils.copyProperties(restaurante, restauranteAtual, "id", "formasPagamento", "endereco", "dataCadastro", "produtos");
-
-	            restauranteAtual = restauranteService.salvar(restauranteAtual);
-	            return ResponseEntity.ok(restauranteAtual);
-	        } catch (EntidadeNaoEncontradaException e) {
-	            return ResponseEntity.badRequest().body(e.getMessage());
-	        }
-	    } else {
-	        return ResponseEntity.notFound().build();
-	    }
+	public Restaurante atualizar(@PathVariable Long restauranteId,
+	        @RequestBody Restaurante restaurante) {
+	    Restaurante restauranteAtual = restauranteService.buscarOuFalhar(restauranteId);
+	    
+	    BeanUtils.copyProperties(restaurante, restauranteAtual, 
+	            "id", "formasPagamento", "endereco", "dataCadastro", "produtos");
+	    
+	    return restauranteService.salvar(restauranteAtual);
 	}
-
 
 	@DeleteMapping("/{restauranteId}")
 	public ResponseEntity<Restaurante> deletCozinha(@PathVariable Long restauranteId) {
 		try {
-			restauranteService.excluirRestaurante(restauranteId);
+			restauranteService.excluir(restauranteId);
 			return ResponseEntity.noContent().build();
 
 		} catch (EntidadeNaoEncontradaException e) {
@@ -107,18 +96,15 @@ public class RestauranteController {
 	}
 
 	@PatchMapping("/{restauranteId}")
-	public ResponseEntity<?> atualizarParcial(@PathVariable Long restauranteId,
+	public Restaurante atualizarParcial(@PathVariable Long restauranteId,
 			@RequestBody Map<String, Object> campos) {
-		Restaurante restauranteAtual = restauranteRepository.getById(restauranteId);
-
-		if (restauranteAtual == null) {
-			return ResponseEntity.notFound().build();
-		}
-
-		Restaurante restauranteMergeado = merge(campos, restauranteAtual);
-
-		return atualizar(restauranteId, restauranteMergeado);
+		Restaurante restauranteAtual = restauranteService.buscarOuFalhar(restauranteId);
+		
+		merge(campos, restauranteAtual);
+		
+		return atualizar(restauranteId, restauranteAtual);
 	}
+
 
 	private Restaurante merge(Map<String, Object> dadosOrigem, Restaurante restauranteAtual) {
 		ObjectMapper objectMapper = new ObjectMapper();

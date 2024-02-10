@@ -13,14 +13,10 @@ import com.efooddeliveryapi.domain.repository.CozinhaRepository;
 @Service
 public class CozinhaService {
 
-	private static final String MSG_COZINHA_NÃO_ENCONTRADA = "Não existe um cadastro de cozinha com código %d";
+	private static final String MSG_COZINHA_NAO_ENCONTRADA = "Não existe um cadastro de cozinha com código %d";
 
-	private static final String MSG_COZINHA_NAO_ENCONTRADA2 = MSG_COZINHA_NÃO_ENCONTRADA;
 
-	private static final String MSG_COZINHA_NÃO_PODE_SER_ENCONTRADA 
-	= "Cozinha de código %d não pode ser removida, pois está em uso";
-
-	private static final String MSG_COZINHA_EM_USO = MSG_COZINHA_NÃO_PODE_SER_ENCONTRADA;
+	private static final String MSG_COZINHA_EM_USO = "cozinha de código %d não pode ser removida, pois esta em uso!";
 	
 	@Autowired
 	CozinhaRepository cozinhaRepository;
@@ -39,7 +35,7 @@ public class CozinhaService {
 			
 		} catch (EmptyResultDataAccessException e) {
 			throw new EntidadeNaoEncontradaException(
-				String.format(MSG_COZINHA_NAO_ENCONTRADA2, cozinhaId));
+				String.format(MSG_COZINHA_NAO_ENCONTRADA, cozinhaId));
 		
 		} catch (DataIntegrityViolationException e) {
 			throw new EntidadeEmUsoException(
@@ -53,7 +49,7 @@ public class CozinhaService {
 	public Cozinha buscarOuFalhar(Long cozinhaId) {
 		return cozinhaRepository.findById(cozinhaId)
 				.orElseThrow( () -> new EntidadeNaoEncontradaException(
-						String.format(MSG_COZINHA_NAO_ENCONTRADA2, cozinhaId)));
+						String.format(MSG_COZINHA_NAO_ENCONTRADA, cozinhaId)));
 		
 	}
 	
