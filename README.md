@@ -1,4 +1,4 @@
-# API de Delivery - Um MVP - da API do e-food.
+# API de Delivery - Um MVP - da API do e-food - monolitico.
 
 ### Do curso - Especialista Spring REST - Empresa - AlgaWorks. 
 #### Onde estou desenvolvendo e me especializando ainda mais no Back-end com Java e Spring Boot.
